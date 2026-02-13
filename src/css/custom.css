@@ -1,0 +1,12 @@
+:root{
+  --ifm-color-primary: #ff6a00; /* subtle orange */
+  --ifm-color-primary-dark: #ff6a00;
+}
+body {
+  background-color: #0b0f14;
+  color: #cbd5df;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', monospace;
+}
+.navbar {
+  background: transparent;
+}

@@ -1,0 +1,103 @@
+openapi: 3.0.3
+info:
+  title: Ciplaw Gateway API
+  version: v1.0.0
+  description: API for submitting and retrieving verification requests.
+paths:
+  /v1/verify:
+    post:
+      summary: Submit an envelope for verification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyRequest'
+      responses:
+        '201':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyAccepted'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/verify/{id}:
+    get:
+      summary: Get verification result
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Verification result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyResult'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    VerifyRequest:
+      type: object
+      required: [payload]
+      properties:
+        payload:
+          type: string
+          description: Encrypted or wrapped payload (base64 or structured envelope)
+        signature:
+          type: string
+          description: Signature over the payload (base64)
+        metadata:
+          type: object
+          additionalProperties: true
+    VerifyAccepted:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+        received_at:
+          type: string
+          format: date-time
+    VerifyResult:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum: [pending, success, failed]
+        result:
+          type: object
+          additionalProperties: true
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
